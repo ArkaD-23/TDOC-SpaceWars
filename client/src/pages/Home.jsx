@@ -69,7 +69,7 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-800 flex flex-col justify-center items-center text-white relative overflow-hidden">
       <h1
         ref={titleRef}
-        className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+        className="text-5xl md:text-7xl font-extrabold text-white"
       >
         SPACEWARS
       </h1>
@@ -79,7 +79,7 @@ const Home = () => {
       <div ref={formRef} className="mt-10 bg-gray-800 p-6 rounded-lg shadow-lg">
         {accounts.length == 0 ? (<button
           type="submit"
-          className="w-64 md:w-80 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white text-lg py-3 rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
+          className="w-64 md:w-80 bg-[#b19aef] text-black text-lg py-3 rounded-lg hover:bg-gray-200 transition-all duration-300"
           onClick={connectWallet}
         >
           CONNECT WALLET
@@ -88,13 +88,13 @@ const Home = () => {
         </h2>
             <input
               type="text"
-              placeholder="Enter your name"
+              placeholder="Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-64 md:w-80 p-3 mb-4 text-black text-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
-              className="w-64 md:w-80 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white text-lg py-3 rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
+              className="w-64 md:w-80 bg-[#b19aef] text-black text-lg py-3 rounded-lg hover:bg-gray-200 transition-all duration-300"
               onClick={handleRegister}
             >
               REGISTER

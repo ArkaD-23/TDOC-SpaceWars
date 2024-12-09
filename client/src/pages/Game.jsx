@@ -146,20 +146,35 @@ const Game = () => {
   return (
     <div
       id="space"
-      className={`relative w-full h-screen bg-gradient-to-b from-gray-900 via-black to-gray-800 overflow-hidden ${
-        gameStarted ? "cursor-none" : ""
-      }`}
+      className={`relative w-full h-screen bg-gradient-to-b from-gray-900 via-black to-gray-800 overflow-hidden ${gameStarted ? "cursor-none" : ""
+        }`}
       onMouseMove={handleMouseMove}
       onClick={handleMouseClick}
     >
       {!gameStarted && (
-        <button
-        id="start"
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl w-64 md:w-80 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white text-lg py-3 rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
-        onClick={startGame}
-      >
-        START GAME
-      </button>
+        <>
+          <div className="absolute top-1/3 left-20">
+            <h1
+              className="text-[#b19aef] text-7xl font-bold mb-4"
+            >
+              Enter The Journey
+            </h1>
+            <br></br>
+            <p className="text-[#ffffff] text-xl mb-2">
+              Brace yourself for an epic space adventure.
+            </p>
+            <p className="text-[#ffffff] text-xl mb-6">
+              Dodge asteroids, destroy enemies, and claim victory.
+            </p>
+            <button
+              id="start"
+              className="bg-[#b19aef] text-[#000000]  text-2xl px-20 py-3 rounded-lg shadow-lg hover:bg-gray-200 transition-all duration-300"
+              onClick={startGame}
+            >
+            START GAME
+            </button>
+          </div>
+        </>
       )}
 
       {gameStarted && (

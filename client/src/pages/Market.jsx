@@ -80,7 +80,7 @@ const Market = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-800 flex flex-col items-center text-white overflow-hidden">
       <h1
         ref={titleRef}
-        className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mt-10"
+        className="text-5xl md:text-7xl font-extrabold bg-clip-text text-[#6c71ff] mt-6"
       >
         Galactic Marketplace
       </h1>
@@ -163,7 +163,7 @@ const Market = () => {
             <div className="flex gap-4 justify-center mt-4">
               <button
                 onClick={closeOverlay}
-                className="px-6 py-2 w-36 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white font-bold hover:from-pink-500 hover:to-red-500 transition-all"
+                className="px-6 py-2 w-36 bg-red-500 rounded-lg text-white font-bold"
               >
                 Close
               </button>
