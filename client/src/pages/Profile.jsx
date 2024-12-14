@@ -137,11 +137,11 @@ const Profile = () => {
           Owned NFTs
         </h2>
 
-        <div className="grid grid-cols-3">
+        {ownedNFTs.length > 0 ? (<div className="grid grid-cols-3">
           {ownedNFTs.map((NFT, index) => (
-            <NFTCard nft={NFT} key={index} />
+            <NFTCard nft={NFT} key={index} setOwnedNFTs={setOwnedNFTs}/>
           ))}
-        </div>
+        </div>) : (<p className="text-center text-gray-400">No NFTs in your collection yet.</p>)}
       </div>
 
       <button

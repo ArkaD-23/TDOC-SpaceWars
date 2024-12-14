@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "../context";
 import "../index.css";
 
-const NFTCard = ({ nft }) => {
+const NFTCard = ({ nft, setOwnedNFTs }) => {
   const { contracts, accounts, setActiveSkin, activeSkin, setActiveBackground, activeBackground } = useGlobalContext();
 
   const [isListModalOpen, setIsListModalOpen] = useState(false);
@@ -29,19 +29,34 @@ const NFTCard = ({ nft }) => {
   const handleListNFT = () => {
     console.log(price);
     console.log(contracts.NFT_MarketPlace._address);
-
+  
     if (price <= 0) return;
-
+  
     const listNFT = async () => {
-      await contracts.NFT_MarketPlace.methods
-        .approve(contracts.NFT_MarketPlace._address, nft.tokenId)
-        .send({ from: accounts[0] });
-      const result = await contracts.NFT_MarketPlace.methods
-        .listNFT(nft.tokenId, price)
-        .send({ from: accounts[0] });
-      console.log(result);
-    };
+      try {
+        // Approve the NFT for the marketplace
+        await contracts.NFT_MarketPlace.methods
+          .approve(contracts.NFT_MarketPlace._address, nft.tokenId)
+          .send({ from: accounts[0] });
+  
+        // List the NFT on the marketplace
+        await contracts.NFT_MarketPlace.methods
+          .listNFT(nft.tokenId, price)
+          .send({ from: accounts[0] });
+  
+        console.log(`NFT with Token ID ${nft.tokenId} listed for sale.`);
 
+        setOwnedNFTs((prevNFTs) =>
+          prevNFTs.filter((ownedNFT) => ownedNFT.tokenId !== nft.tokenId)
+        );
+
+        setIsListModalOpen(false);
+  
+      } catch (error) {
+        console.error("Failed to list NFT for sale:", error);
+      }
+    };
+  
     listNFT();
   };
 
@@ -95,7 +110,7 @@ const NFTCard = ({ nft }) => {
                 onClick={handleListNFT}
                 className="px-6 py-2 w-36 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg text-white font-bold hover:from-blue-500 hover:to-green-500 transition-all"
               >
-                List For Sale
+                List
               </button>
             </div>
           </div>
