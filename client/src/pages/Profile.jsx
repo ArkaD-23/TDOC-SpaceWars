@@ -25,7 +25,7 @@ const Profile = () => {
 
   const handleMintNFT = () => {
     const mintNFT = async (uri) => {
-      setIsMinting(true); 
+      setIsMinting(true);
       try {
         const tokenId = await contracts.NFT_MarketPlace.methods
           .createNFT(uri)
@@ -34,7 +34,7 @@ const Profile = () => {
       } catch (error) {
         console.error("Minting failed:", error);
       } finally {
-        setIsMinting(false);  // Set minting back to false after the process is done
+        setIsMinting(false); // Set minting back to false after the process is done
       }
     };
 
@@ -66,7 +66,9 @@ const Profile = () => {
       { opacity: 0, scale: 0.9 },
       { opacity: 1, scale: 1, duration: 1.2, delay: 0.7, ease: "power4.out" }
     );
+  }, []);
 
+  useEffect(() => {
     const getPlayerName = async () => {
       const name = await contracts.SpaceWars.methods
         .getPlayerName()
@@ -103,7 +105,7 @@ const Profile = () => {
 
     getPlayerName();
     getNFTs();
-  }, [contracts, accounts]);
+  }, [contracts, accounts, ownedNFTs]);
 
   const handleMintInputChange = (e) => {
     const { type, name, value, files } = e.target;
@@ -122,10 +124,7 @@ const Profile = () => {
         >
           {username}
         </h1>
-        <p
-          ref={subtitleRef}
-          className="text-gray-400 mt-2 text-lg md:text-xl"
-        >
+        <p ref={subtitleRef} className="text-gray-400 mt-2 text-lg md:text-xl">
           Your collection of exclusive NFTs
         </p>
       </div>
@@ -137,11 +136,17 @@ const Profile = () => {
           Owned NFTs
         </h2>
 
-        {ownedNFTs.length > 0 ? (<div className="grid grid-cols-3">
-          {ownedNFTs.map((NFT, index) => (
-            <NFTCard nft={NFT} key={index} setOwnedNFTs={setOwnedNFTs}/>
-          ))}
-        </div>) : (<p className="text-center text-gray-400">No NFTs in your collection yet.</p>)}
+        {ownedNFTs.length > 0 ? (
+          <div className="grid grid-cols-3">
+            {ownedNFTs.map((NFT, index) => (
+              <NFTCard nft={NFT} key={index} setOwnedNFTs={setOwnedNFTs} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400">
+            No NFTs in your collection yet.
+          </p>
+        )}
       </div>
 
       <button
