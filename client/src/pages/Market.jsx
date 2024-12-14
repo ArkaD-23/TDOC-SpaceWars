@@ -3,48 +3,6 @@ import { gsap } from "gsap";
 import { useGlobalContext } from "../context";
 import "../utilities/scrollable.css";
 
-const skins = [
-  {
-    name: "Rocket Skin - Neon Blaze",
-    price: "10 ETH",
-    color: "from-blue-500 to-purple-500",
-    image: "https://via.placeholder.com/150/00f/fff?text=Neon+Blaze",
-  },
-  {
-    name: "Rocket Skin - Galactic Gold",
-    price: "15 ETH",
-    color: "from-yellow-400 to-orange-500",
-    image: "https://via.placeholder.com/150/ff0/000?text=Galactic+Gold",
-  },
-  {
-    name: "Rocket Skin - Cosmic Silver",
-    price: "20 ETH",
-    color: "from-gray-400 to-gray-600",
-    image: "https://via.placeholder.com/150/c0c0c0/000?text=Cosmic+Silver",
-  },
-];
-
-const backgrounds = [
-  {
-    name: "Space Background - Starlit Nebula",
-    price: "8 ETH",
-    color: "from-purple-600 to-pink-500",
-    image: "https://via.placeholder.com/150/800080/fff?text=Starlit+Nebula",
-  },
-  {
-    name: "Space Background - Cosmic Horizon",
-    price: "12 ETH",
-    color: "from-green-400 to-blue-500",
-    image: "https://via.placeholder.com/150/008080/fff?text=Cosmic+Horizon",
-  },
-  {
-    name: "Space Background - Aurora Burst",
-    price: "18 ETH",
-    color: "from-teal-400 to-indigo-500",
-    image: "https://via.placeholder.com/150/4682b4/fff?text=Aurora+Burst",
-  },
-];
-
 const Market = () => {
   const { contracts, accounts } = useGlobalContext();
   const [selectedItem, setSelectedItem] = useState(null);
@@ -60,21 +18,37 @@ const Market = () => {
   const [backgroundNFTs, setBackgroundNFTs] = useState([]);
 
   const handleBuyNFT = (e) => {
-    console.log(selectedItem);
-
     const buyNFT = async () => {
-      const result = await contracts.NFT_MarketPlace.methods
-        .buyNFT(selectedItem.tokenId.tokenId)
-        .send({
-          from: accounts[0],
-          value: selectedItem.price,
-        });
+      try {
+        const result = await contracts.NFT_MarketPlace.methods
+          .buyNFT(selectedItem.tokenId.tokenId)
+          .send({
+            from: accounts[0],
+            value: selectedItem.price,
+          });
+  
+        console.log("Purchase successful:", result);
+  
+        // Update the NFTs state to remove the purchased item
+        if (selectedItem.type === "spaceship") {
+          setSpaceshipNFTs((prevNFTs) =>
+            prevNFTs.filter((nft) => nft.tokenId.tokenId !== selectedItem.tokenId.tokenId)
+          );
+        } else if (selectedItem.type === "background") {
+          setBackgroundNFTs((prevNFTs) =>
+            prevNFTs.filter((nft) => nft.tokenId.tokenId !== selectedItem.tokenId.tokenId)
+          );
+        }
 
-      console.log(result);
+        setSelectedItem(null);
+      } catch (error) {
+        console.error("Error during purchase:", error);
+      }
     };
-
+  
     buyNFT();
   };
+  
 
   useEffect(() => {
     gsap.fromTo(
@@ -152,7 +126,6 @@ const Market = () => {
         Buy exclusive rocket skins and space backgrounds for your journey!
       </p>
 
-      {/* Skins Section */}
       <div
         ref={skinsRef}
         className="mt-10 bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 md:w-2/4 max-h-80 overflow-y-auto scrollable-container z-10"
@@ -160,33 +133,36 @@ const Market = () => {
         <h2 className="text-2xl font-semibold text-gray-200 mb-4 text-center">
           Rocket Skins
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {spaceshipNFTs.map((skin, index) => (
-            <div
-              ref={(el) => (skinsItemsRef.current[index] = el)}
-              key={index}
-              className="w-64 p-4 rounded-lg bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-lg"
-              onClick={() => setSelectedItem(skin)}
-            >
-              <div className="w-full h-40 md:h-60 flex items-center justify-center bg-gray-600 rounded-md overflow-hidden">
-                <img
-                  src={skin.image}
-                  alt={skin.name}
-                  className="object-cover w-full h-full"
-                />
+        {spaceshipNFTs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {spaceshipNFTs.map((skin, index) => (
+              <div
+                ref={(el) => (skinsItemsRef.current[index] = el)}
+                key={index}
+                className="w-64 p-4 rounded-lg bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-lg"
+                onClick={() => setSelectedItem(skin)}
+              >
+                <div className="w-full h-40 md:h-60 flex items-center justify-center bg-gray-600 rounded-md overflow-hidden">
+                  <img
+                    src={skin.image}
+                    alt={skin.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div className="mt-4 text-center">
+                  <h4 className="text-xl font-semibold text-gray-200">
+                    {skin.name}
+                  </h4>
+                  <p className="text-sm text-gray-400 mt-2">{skin.description}</p>
+                </div>
               </div>
-              <div className="mt-4 text-center">
-                <h4 className="text-xl font-semibold text-gray-200">
-                  {skin.name}
-                </h4>
-                <p className="text-sm text-gray-400 mt-2">{skin.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400">No Rocket Skins available.</p>
+        )}
       </div>
-
-      {/* Backgrounds Section */}
+ 
       <div
         ref={backgroundsRef}
         className="mt-10 bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 md:w-2/4 max-h-80 overflow-y-auto scrollable-container mb-10"
@@ -194,35 +170,40 @@ const Market = () => {
         <h2 className="text-2xl font-semibold text-gray-200 mb-4 text-center">
           Space Backgrounds
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {backgroundNFTs.map((background, index) => (
-            <div
-              ref={(el) => (backgroundsItemsRef.current[index] = el)}
-              key={index}
-              className="w-64 p-4 rounded-lg bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-lg"
-              onClick={() => setSelectedItem(background)}
-            >
-              <div className="w-full h-40 md:h-60 flex items-center justify-center bg-gray-600 rounded-md overflow-hidden">
-                <img
-                  src={background.image}
-                  alt={background.name}
-                  className="object-cover w-full h-full"
-                />
+        {backgroundNFTs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {backgroundNFTs.map((background, index) => (
+              <div
+                ref={(el) => (backgroundsItemsRef.current[index] = el)}
+                key={index}
+                className="w-64 p-4 rounded-lg bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-lg"
+                onClick={() => setSelectedItem(background)}
+              >
+                <div className="w-full h-40 md:h-60 flex items-center justify-center bg-gray-600 rounded-md overflow-hidden">
+                  <img
+                    src={background.image}
+                    alt={background.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div className="mt-4 text-center">
+                  <h4 className="text-xl font-semibold text-gray-200">
+                    {background.name}
+                  </h4>
+                  <p className="text-sm text-gray-400 mt-2">
+                    {background.description}
+                  </p>
+                </div>
               </div>
-              <div className="mt-4 text-center">
-                <h4 className="text-xl font-semibold text-gray-200">
-                  {background.name}
-                </h4>
-                <p className="text-sm text-gray-400 mt-2">
-                  {background.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400">
+            No Space Backgrounds available.
+          </p>
+        )}
       </div>
-
-      {/* Purchase Overlay */}
+  
       {selectedItem && (
         <div
           ref={overlayRef}
@@ -255,7 +236,7 @@ const Market = () => {
           </div>
         </div>
       )}
-
+  
       {/* Floating Decorations */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-10 left-20 w-16 h-16 bg-blue-500 rounded-full blur-2xl animate-pulse"></div>
@@ -264,6 +245,7 @@ const Market = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Market;
