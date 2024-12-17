@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { useGlobalContext } from "../context";
 import NFTCard from "../components/NFTCard.jsx";
@@ -25,7 +25,6 @@ const Profile = () => {
 
   const handleMintNFT = () => {
     const mintNFT = async (uri) => {
-      setIsMinting(true);
       try {
         const tokenId = await contracts.NFT_MarketPlace.methods
           .createNFT(uri)
@@ -33,8 +32,6 @@ const Profile = () => {
         console.log("NFT minted with token ID:", tokenId);
       } catch (error) {
         console.error("Minting failed:", error);
-      } finally {
-        setIsMinting(false); // Set minting back to false after the process is done
       }
     };
 
@@ -44,7 +41,11 @@ const Profile = () => {
       mintNFT(uri);
     };
 
+    setIsMinting(true);
+
     ipfsUpload();
+
+    setIsMinting(false); // Set minting back to false after the process is done
     setIsMintModalOpen(false);
   };
 
@@ -87,7 +88,7 @@ const Profile = () => {
           .tokenURI(tokenId)
           .call({ from: accounts[0] });
         const dataUrl = tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/");
-        const response = await fetch(dataUrl, {});
+        const response = await fetch(dataUrl);
         let jsonData = await response.json();
         jsonData.image = jsonData.image.replace(
           "ipfs://",
@@ -105,10 +106,10 @@ const Profile = () => {
 
     getPlayerName();
     getNFTs();
-  }, [contracts, accounts, ownedNFTs]);
+  }, [contracts, accounts]);
 
   const handleMintInputChange = (e) => {
-    const { type, name, value, files } = e.target;
+    const { name, value, files } = e.target;
     setMintData((prevData) => ({
       ...prevData,
       [name]: files ? files[0] : value,

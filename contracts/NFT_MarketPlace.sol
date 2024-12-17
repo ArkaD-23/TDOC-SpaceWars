@@ -38,7 +38,10 @@ contract NFT_MarketPlace is ERC721URIStorage {
 
     function listNFT(uint256 tokenID, uint256 price) public {
         require(price > 0, "NFTMarket: price must be greater than 0");
-        require(ownerOf(tokenID)==msg.sender, "NFTMarket: You are not the owner");
+        require(
+            ownerOf(tokenID) == msg.sender,
+            "NFTMarket: You are not the owner"
+        );
 
         transferFrom(msg.sender, address(this), tokenID);
 
