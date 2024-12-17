@@ -7,6 +7,7 @@ contract SpaceWars {
 
     function registerPlayer(string calldata name) public {
         require(bytes(name).length > 0, "Name cannot be empty");
+        require(bytes(playerName[msg.sender]).length == 0, "Player already registered");
         playerName[msg.sender] = name;
     }
 
